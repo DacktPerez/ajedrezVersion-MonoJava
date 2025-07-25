@@ -53,7 +53,7 @@ El enroque es un movimiento especial que involucra al rey y una torre.
    - **Derecha**: Enroque corto (con torre del lado del rey)
    - **Izquierda**: Enroque largo (con torre del lado de la reina)
 
-#### Condiciones para el enroque ✅:
+#### Condiciones para el enroque:
 - El rey no se ha movido nunca
 - La torre no se ha movido nunca  
 - No hay piezas entre el rey y la torre
