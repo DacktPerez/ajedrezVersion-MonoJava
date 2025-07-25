@@ -18,7 +18,7 @@ public class MenuJuego extends JFrame {
         titulo.setFont(new Font("Arial", Font.BOLD, 24));
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Botón Iniciar Juego 1 vs 1
+
         JButton btnIniciar = new JButton("Iniciar Juego 1 vs 1");
         btnIniciar.setFont(new Font("Arial", Font.PLAIN, 18));
         btnIniciar.setAlignmentX(Component.CENTER_ALIGNMENT);
