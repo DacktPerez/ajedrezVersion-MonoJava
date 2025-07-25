@@ -13,13 +13,15 @@
 
 ### Diagrama de Componentes
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  MenuPrincipal  │────│ TableroAjedrez  │────│ValidadorMovimiento│
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                               │
-                       ┌─────────────────┐
-                       │    BotFacil     │
-                       └─────────────────┘
+┌─────────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│PantallaPresentacion │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
+│     (main)          │    │                 │    │                 │    │                 │
+└─────────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                           │
+                                                   ┌─────────────────┐
+                                                   │    BotFacil     │
+                                                   │                 │
+                                                   └─────────────────┘
 ```
 
 ### Patrón de Diseño
@@ -30,11 +32,28 @@
 
 ## 🔧 Clases Principales
 
-### 1. MenuPrincipal.java
-**Propósito**: Punto de entrada del juego y selección de modo
+### 1. PantallaPresentacion.java
+**Propósito**: Punto de entrada principal de la aplicación (main)
 
 ```java
-public class MenuPrincipal extends JFrame {
+public class PantallaPresentacion extends JFrame {
+    // Métodos principales:
+    - main()                  // Punto de entrada del programa
+    - mostrarPresentacion()   // Pantalla de bienvenida
+    - iniciarMenuJuego()      // Navegación al menú principal
+}
+```
+
+**Responsabilidades**:
+- Punto de entrada del programa
+- Mostrar pantalla de bienvenida/logos
+- Dirigir al usuario al menú principal
+
+### 2. MenuJuego.java
+**Propósito**: Menú principal del juego y selección de modo
+
+```java
+public class MenuJuego extends JFrame {
     // Métodos principales:
     - mostrarMenu()           // Interfaz principal
     - iniciarJuegoVsJugador() // Modo 1v1
@@ -45,9 +64,9 @@ public class MenuPrincipal extends JFrame {
 **Responsabilidades**:
 - Mostrar opciones de juego
 - Crear instancia de `TableroAjedrez` según el modo
-- Gestionar la navegación inicial
+- Gestionar la navegación del menú
 
-### 2. TableroAjedrez.java
+### 3. TableroAjedrez.java
 **Propósito**: Motor principal del juego
 
 ```java
@@ -77,7 +96,7 @@ public class TableroAjedrez extends JFrame {
 - `estaEnJaque()`: Detecta situaciones de jaque
 - `esJaqueMate()`: Verifica jaque mate
 
-### 3. ValidadorMovimiento.java
+### 4. ValidadorMovimiento.java
 **Propósito**: Validación de todos los movimientos de piezas
 
 ```java
@@ -99,7 +118,7 @@ public class ValidadorMovimiento {
 - **Reina**: Combinación torre + alfil
 - **Rey**: Una casilla en cualquier dirección + enroque especial
 
-### 4. BotFacil.java
+### 5. BotFacil.java
 **Propósito**: Inteligencia artificial para el oponente
 
 ```java
