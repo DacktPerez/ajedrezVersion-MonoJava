@@ -14,8 +14,8 @@
 ### Diagrama de Componentes
 ```
 ┌─────────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│PantallaPresentacion │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
-│     (main)          │    │                 │    │                 │    │                 │
+│        Main         │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
+│                     │    │                 │    │                 │    │                 │
 └─────────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                            │
                                                    ┌─────────────────┐
