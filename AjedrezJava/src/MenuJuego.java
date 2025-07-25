@@ -24,25 +24,25 @@ public class MenuJuego extends JFrame {
         btnIniciar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnIniciar.addActionListener(e -> {
             dispose();
-            new TableroAjedrez(false).setVisible(true); // Juego normal 1 vs 1
+            new TableroAjedrez(false).setVisible(true); 
         });
 
-        // Botón Jugar vs Bot
+
         JButton btnJugarBot = new JButton("Jugar vs Bot");
         btnJugarBot.setFont(new Font("Arial", Font.PLAIN, 18));
         btnJugarBot.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnJugarBot.addActionListener(e -> {
             dispose();
-            new TableroAjedrez(true).setVisible(true); // Juego contra bot
+            new TableroAjedrez(true).setVisible(true); 
         });
 
-        // Botón Salir
+
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("Arial", Font.PLAIN, 18));
         btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnSalir.addActionListener(e -> System.exit(0));
 
-        // Agregar componentes al panel
+  
         panel.add(titulo);
         panel.add(Box.createVerticalStrut(30));
         panel.add(btnIniciar);
