@@ -54,6 +54,11 @@ public class ValidadorMovimiento {
                 if (Math.abs(df) <= 1 && Math.abs(dc) <= 1) {
                     return true;
                 }
+                // Permitir movimiento de enroque (2 casillas horizontalmente)
+                if (df == 0 && Math.abs(dc) == 2) {
+                    // La validación específica del enroque se hace en TableroAjedrez
+                    return true;
+                }
                 break;
             default:
                 return false;
