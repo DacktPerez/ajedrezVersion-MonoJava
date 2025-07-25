@@ -14,8 +14,8 @@
 ### Diagrama de Componentes
 ```
 ┌─────────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│PantallaPresentacion │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
-│     (main)          │    │                 │    │                 │    │                 │
+│Main                  │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
+│                     │    │                 │    │                 │    │                 │
 └─────────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                            │
                                                    ┌─────────────────┐
@@ -32,11 +32,11 @@
 
 ## 🔧 Clases Principales
 
-### 1. PantallaPresentacion.java
+### 1. Main.java
 **Propósito**: Punto de entrada principal de la aplicación (main)
 
 ```java
-public class PantallaPresentacion extends JFrame {
+public class Main extends JFrame {
     // Métodos principales:
     - main()                  // Punto de entrada del programa
     - mostrarPresentacion()   // Pantalla de bienvenida
