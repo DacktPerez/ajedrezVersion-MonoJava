@@ -14,8 +14,8 @@
 ### Diagrama de Componentes
 ```
 ┌─────────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│        Main         │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
-│                     │    │                 │    │                 │    │                 │
+│PantallaPresentacion │────│   MenuJuego     │────│ TableroAjedrez  │────│ValidadorMovimiento│
+│     (main)          │    │                 │    │                 │    │                 │
 └─────────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                            │
                                                    ┌─────────────────┐
@@ -32,11 +32,11 @@
 
 ## 🔧 Clases Principales
 
-### 1. Main.java
+### 1. PantallaPresentacion.java
 **Propósito**: Punto de entrada principal de la aplicación (main)
 
 ```java
-public class Main extends JFrame {
+public class PantallaPresentacion extends JFrame {
     // Métodos principales:
     - main()                  // Punto de entrada del programa
     - mostrarPresentacion()   // Pantalla de bienvenida
@@ -119,6 +119,7 @@ public class ValidadorMovimiento {
 - **Rey**: Una casilla en cualquier dirección + enroque especial
 
 ### 5. BotFacil.java
+**Propósito**: Inteligencia artificial para el oponente
 
 ```java
 public class BotFacil {
@@ -129,10 +130,25 @@ public class BotFacil {
 **Estrategia del Bot**:
 1. **Escape de Jaque** (Prioridad Máxima)
 2. **Distracción Aleatoria** (20% probabilidad)
-3. **Capturas Aleatorias**
-4. **Movimientos de Peones Aleatorios**
-5. **Movimientos Generales Aleatorios**
+3. **Capturas Aleatorias** (usando arrays fijos)
+4. **Movimientos de Peones Aleatorios** (todo el tablero + capturas)
+5. **Movimientos Generales Aleatorios** (con mezcla manual)
 6. **Fallback**: Primer movimiento válido
+
+### Arquitectura 
+
+```java
+int[][] movimientos = new int[maxMovimientos][4];
+int contador = 0;
+movimientos[contador][0] = fila; // Asignación directa
+contador++;
+return new int[]{movimientos[indice][0], movimientos[indice][1], /* ... */};
+```
+
+#### Ventajas de la Implementación:
+- ✅ **Mejor rendimiento**: Arrays son más rápidos que listas dinámicas
+- ✅ **Memoria predecible**: Tamaño fijo conocido en tiempo de compilación
+- ✅ **Control total**: Manejo manual de índices y límites
 
 ## 🎮 Funcionalidades Implementadas
 
@@ -193,7 +209,7 @@ private boolean esJaqueMate(String color) {
 }
 ```
 
-## 🤖 Sistema de Bot
+## 🤖 Sistema de Bot Avanzado
 
 ### Arquitectura de Decisión
 
@@ -239,20 +255,118 @@ private static int[] buscarEscapeDeJaque(String[][] piezas) {
 #### 2. Capturas Aleatorias
 ```java
 private static int[] buscarCapturaAleatoria(String[][] piezas) {
-    // 1. Recopilar todas las capturas posibles
-    // 2. Almacenar en ArrayList
-    // 3. Seleccionar aleatoriamente con Math.random()
+    // 1. Crear array bidimensional para almacenar movimientos (64x4)
+    int[][] capturasPosibles = new int[64][4];
+    int contador = 0;
+    
+    // 2. Recopilar todas las capturas posibles
+    for (cada pieza negra en el tablero) {
+        for (cada posición destino) {
+            if (hay pieza blanca && movimiento válido) {
+                // Almacenar: [filaOrigen, colOrigen, filaDestino, colDestino]
+                capturasPosibles[contador] = movimiento;
+                contador++;
+            }
+        }
+    }
+    
+    // 3. Seleccionar aleatoriamente usando Math.random() y contador
+    return capturasPosibles[random * contador];
 }
 ```
 
-#### 3. Movimiento de Peones Inteligente
+#### 3. Movimiento de Peones
 ```java
 private static int[] moverPeonAleatorio(String[][] piezas) {
-    // 1. Buscar peones en TODO el tablero (no solo iniciales)
-    // 2. Incluir movimientos de avance Y capturas diagonales
-    // 3. Considerar movimiento doble desde posición inicial
-    // 4. Selección aleatoria entre opciones válidas
+    // 1. Array para movimientos de peones (32x4 - suficiente para todos los peones)
+    int[][] movimientosPeones = new int[32][4];
+    int contador = 0;
+    
+    // 2. Buscar peones en TODO el tablero (no solo posición inicial)
+    for (int fila = 0; fila < 8; fila++) {
+        for (cada peón negro encontrado) {
+            // a) Movimiento adelante (1 casilla)
+            // b) Movimiento doble desde posición inicial (fila == 1)
+            // c) Capturas diagonales (izquierda y derecha)
+            if (movimiento válido) {
+                movimientosPeones[contador] = movimiento;
+                contador++;
+            }
+        }
+    }
+    
+    // 3. Selección aleatoria entre todos los movimientos válidos
+    return movimiento aleatorio;
 }
+```
+
+#### 4. Movimientos Generales Aleatorios
+```java
+private static int[] buscarMovimientoAleatorio(String[][] piezas) {
+    // 1. Array grande para múltiples movimientos (200x4)
+    int[][] movimientosPosibles = new int[200][4];
+    int contador = 0;
+    
+    // 2. Mezcla manual de tipos de piezas (sin Collections.shuffle)
+    String[] tiposPiezas = {"peon", "caballo", "alfil", "torre", "reina"};
+    for (int i = 0; i < tiposPiezas.length; i++) {
+        int j = (int)(Math.random() * tiposPiezas.length);
+        // Intercambiar elementos manualmente
+        swap(tiposPiezas[i], tiposPiezas[j]);
+    }
+    
+    // 3. Buscar movimientos con rango variable
+    for (cada tipo de pieza en orden aleatorio) {
+        int rangoMax = (Math.random() < 0.7) ? 2 : 4; // Movimientos cortos/largos
+        
+        // 4. Comportamientos especiales:
+        if (Math.random() < 0.3) return movimiento_impulsivo; // 30% impulsivo
+        if (Math.random() < 0.4) break; // 40% no seguir buscando
+    }
+    
+    return movimiento_aleatorio;
+}
+```
+
+## 🧠 Inteligencia del Bot Mejorada
+
+### Comportamientos Avanzados Implementados
+
+#### 1. **Movimiento de Peones Inteligente**
+```java
+// El bot ahora considera:
+- Peones en TODO el tablero (no solo posición inicial)
+- Capturas diagonales automáticas
+- Movimiento doble desde fila inicial
+- Selección aleatoria entre todas las opciones válidas
+```
+
+#### 2. **Sistema de Aleatoriedad Sofisticado**
+```java
+// Múltiples niveles de randomización:
+- 20% probabilidad de "distracción" (ignora capturas)
+- 30% probabilidad de movimiento "impulsivo" 
+- 40% probabilidad de no seguir buscando más opciones
+- 70% movimientos cortos vs 30% movimientos largos
+- Mezcla aleatoria del orden de evaluación de piezas
+```
+
+#### 3. **Gestión de Jaque Robusta**
+```java
+private static int[] buscarEscapeDeJaque(String[][] piezas) {
+    // 1. Prioridad: Mover el rey a casilla segura
+    // 2. Alternativa: Bloquear/capturar atacante
+    // 3. Simulación completa para verificar efectividad
+    // 4. Solo retorna movimientos que realmente escapan del jaque
+}
+```
+
+#### 4. **Optimización de Estructuras de Datos**
+```java
+// Tamaños optimizados según análisis real:
+int[][] capturasPosibles = new int[64][4];   // Máximo teórico de capturas
+int[][] movimientosPeones = new int[32][4];  // 8 peones × 4 movimientos máx
+int[][] movimientosPosibles = new int[200][4]; // Buffer amplio para seguridad
 ```
 
 ## 🔍 Sistema de Validación
@@ -304,7 +418,47 @@ private static boolean validarMovimientoPeon(String[][] piezas, String pieza,
 }
 ```
 
-## 📊 Manejo de Estados
+## 📊 Manejo de Estados del Bot
+
+### Estructuras de Datos Optimizadas
+```java
+// Usando arrays simples
+private static int[] buscarCapturaAleatoria(String[][] piezas) {
+    int[][] capturasPosibles = new int[64][4]; // Array bidimensional
+    int contador = 0; // Control manual de elementos
+    
+    // Llenado manual sin .add()
+    capturasPosibles[contador][0] = filaOrigen;
+    capturasPosibles[contador][1] = colOrigen;
+    capturasPosibles[contador][2] = filaDestino;
+    capturasPosibles[contador][3] = colDestino;
+    contador++;
+    
+    // Selección sin .get() - acceso directo
+    int indiceAleatorio = (int)(Math.random() * contador);
+    return new int[]{capturasPosibles[indiceAleatorio][0], /* ... */};
+}
+```
+
+### Técnicas de Optimización Implementadas
+- **Arrays Fijos**: Tamaños predefinidos para evitar redimensionamiento
+- **Contadores Manuales**: En lugar de `.size()` de listas dinámicas
+- **Acceso Directo**: Sin métodos `.get()` o `.add()`
+- **Mezclas Manuales**: Algoritmo Fisher-Yates simplificado sin Collections
+
+### Gestión de Memoria Eficiente
+```java
+// Tamaños optimizados según uso real:
+int[][] capturasPosibles = new int[64][4];   // Máximo capturas posibles
+int[][] movimientosPeones = new int[32][4];  // Suficiente para 8 peones
+int[][] movimientosPosibles = new int[200][4]; // Movimientos generales
+
+// Control de desbordamiento
+if (contador < arraySize) {
+    // Almacenar movimiento
+    contador++;
+}
+```
 
 ### Estados del Juego
 ```java
@@ -384,22 +538,28 @@ if (esMovimientoNuevaRegla(/*parámetros*/)) {
 ```java
 // En BotFacil.java
 private static int[] nuevaEstrategia(String[][] piezas) {
-    java.util.List<int[]> movimientos = new java.util.ArrayList<>();
+    int[][] movimientos = new int[100][4]; // Array fijo en 
+    int contador = 0;
     
     // Lógica de la estrategia
     for (int fila = 0; fila < 8; fila++) {
         for (int col = 0; col < 8; col++) {
             // Evaluar movimientos
-            if (/* condición */) {
-                movimientos.add(new int[]{fila, col, nuevaFila, nuevaCol});
+            if (/* condición */ && contador < 100) {
+                movimientos[contador][0] = fila;
+                movimientos[contador][1] = col;
+                movimientos[contador][2] = nuevaFila;
+                movimientos[contador][3] = nuevaCol;
+                contador++;
             }
         }
     }
     
-    // Selección aleatoria
-    if (!movimientos.isEmpty()) {
-        int indice = (int)(Math.random() * movimientos.size());
-        return movimientos.get(indice);
+    // Selección aleatoria 
+    if (contador > 0) {
+        int indice = (int)(Math.random() * contador);
+        return new int[]{movimientos[indice][0], movimientos[indice][1],
+                        movimientos[indice][2], movimientos[indice][3]};
     }
     
     return null;
@@ -426,24 +586,61 @@ if (reyBlancoMovido) {
 
 #### Simular Estados
 ```java
-// Para testing:
-private String[][] crearTableroTest() {
+// Para testing del bot:
+private static String[][] crearTableroTest() {
     String[][] tablero = new String[8][8];
     // Configurar posiciones específicas para test
+    tablero[0][4] = "resources/rey_negro.png";
+    tablero[7][4] = "resources/rey_blanco.png";
+    // ... más configuraciones
     return tablero;
+}
+
+// Test de arrays
+private static void testArrayBot() {
+    String[][] tableroTest = crearTableroTest();
+    int[] movimiento = BotFacil.obtenerMovimiento(tableroTest);
+    
+    System.out.println("Movimiento obtenido: [" + 
+        movimiento[0] + "," + movimiento[1] + "," + 
+        movimiento[2] + "," + movimiento[3] + "]");
+}
+
+// Verificar contadores en métodos:
+private static int[] debugMovimientos(String[][] piezas) {
+    int[][] movimientos = new int[200][4];
+    int contador = 0;
+    
+    // ... lógica del bot ...
+    
+    System.out.println("DEBUG: Se encontraron " + contador + " movimientos");
+    if (contador == 0) {
+        System.out.println("DEBUG: ¡No hay movimientos disponibles!");
+    }
+    
+    return (contador > 0) ? seleccionarMovimiento(movimientos, contador) : null;
 }
 ```
 
 ### Optimizaciones
 
 #### Performance
-- Usar `StringBuilder` para concatenación de strings
-- Cache de movimientos válidos
-- Lazy loading de validaciones costosas
+- Usar arrays fijos
+- Acceso directo por índice en lugar de métodos `.get()`
+- Contadores manuales en lugar de `.size()`
+- Mezclas de arrays sin dependencias de `Collections.shuffle()`
 
 #### Memoria
-- Reutilizar objetos `ArrayList`
-- Implementar pooling de arrays temporales
+- Arrays predimensionados según uso real esperado
+- Sin crecimiento dinámico de estructuras de datos
+- Reutilización de arrays locales en métodos
+- Control manual de límites para evitar desbordamiento
+
+#### Dependencias Minimizadas
+- Sin importaciones de `java.util.*`
+- Sin uso de clases de colecciones
+- Algoritmos implementados manualmente
+- Código autocontenido sin dependencias externas
 
 ## 📝 Convenciones de Código
 
@@ -455,18 +652,55 @@ private String[][] crearTableroTest() {
 
 ### Estructura de Métodos
 ```java
-private tipo nombreMetodo(parametros) {
-    // 1. Validaciones de entrada
-    if (condicionInvalida) return valorDefault;
+private static int[] nombreMetodo(String[][] piezas) {
+    // 1. Declarar array fijo y contador
+    int[][] resultados = new int[TAMAÑO_MAXIMO][4];
+    int contador = 0;
     
-    // 2. Lógica principal
-    tipo resultado = calcularResultado();
+    // 2. Lógica principal con validaciones
+    for (bucles anidados) {
+        if (condicionValida && contador < TAMAÑO_MAXIMO) {
+            resultados[contador][0] = valor1;
+            resultados[contador][1] = valor2;
+            resultados[contador][2] = valor3;
+            resultados[contador][3] = valor4;
+            contador++;
+        }
+    }
     
-    // 3. Post-procesamiento
-    procesarResultado(resultado);
+    // 3. Selección aleatoria o retorno
+    if (contador > 0) {
+        int indice = (int)(Math.random() * contador);
+        return new int[]{resultados[indice][0], resultados[indice][1],
+                        resultados[indice][2], resultados[indice][3]};
+    }
     
-    return resultado;
+    return null;
 }
+```
+
+### Mejores Prácticas para Arrays
+```java
+// ✅ Correcto: Tamaños apropiados
+int[][] capturas = new int[64][4];    // Máximo teórico
+int[][] peones = new int[32][4];      // 8 peones × 4 mov. máx
+int[][] generales = new int[200][4];  // Buffer amplio
+
+// ✅ Control de desbordamiento
+if (contador < TAMAÑO_ARRAY) {
+    array[contador] = valor;
+    contador++;
+}
+
+// ✅ Verificación antes de acceso
+if (contador > 0) {
+    int indice = (int)(Math.random() * contador);
+    return array[indice];
+}
+
+// ❌ Evitar: Tamaños insuficientes o acceso sin verificar
+int[][] pequeño = new int[5][4];     // Muy pequeño
+return array[indice];                // Sin verificar límites
 ```
 
 ### Comentarios
