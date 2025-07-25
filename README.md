@@ -5,12 +5,12 @@
 ### Primer Uso
 1. **Ejecutar el juego**: Haz doble clic en `Main.java` o ejecuta desde tu IDE
 2. **Seleccionar modo**: Elige entre "Jugador vs Jugador" o "Jugador vs Bot"
-3. **¡A jugar!**: El tablero se abrirá listo para comenzar
+3. **Inicia la partida**: El tablero se abrirá listo para comenzar
 
 ### Controles Básicos
-- ** Clic izquierdo**: Seleccionar pieza / Mover a casilla
-- ** Clic en pieza seleccionada**: Cancelar selección
-- ** Borde azul**: Indica la pieza actualmente seleccionada
+- **Clic izquierdo**: Seleccionar pieza / Mover a casilla
+- **Clic en pieza seleccionada**: Cancelar selección
+- **Borde azul**: Indica la pieza actualmente seleccionada
 
 ## Modos de Juego
 
@@ -71,7 +71,7 @@ Después del enroque corto:
 
 ### Coronación de Peones
 
-#### ¿Cuándo ocurre?
+#### ¿Cuándo sucede?
 - Cuando tu peón llega al final del tablero (fila 1 para blancas, fila 8 para negras)
 
 #### ¿Cómo elegir la pieza?
@@ -105,7 +105,7 @@ Tienes 3 opciones:
 
 ### Jaque Mate
 - **¿Qué es?**: No puedes salir del jaque de ninguna manera
-- **Resultado**: ¡Has perdido la partida!
+- **Resultado**: Has perdido la partida
 - **El juego termina** automáticamente
 
 ## Jugando Contra el Bot
@@ -183,32 +183,32 @@ Tienes 3 opciones:
 
 ### Movimiento de Piezas
 
-#### ♟️ Peón
+#### Peón
 - **Adelante**: 1 casilla (2 en primer movimiento)
 - **Captura**: 1 casilla en diagonal
 - **Especial**: Coronación al llegar al final
 
-#### 🏰 Torre
+#### Torre
 - **Movimiento**: Horizontal y vertical, cualquier distancia
 - **Captura**: Igual que movimiento
 - **Especial**: Participa en el enroque
 
-#### 🐎 Caballo
+#### Caballo
 - **Movimiento**: En "L" (2+1 o 1+2 casillas)
 - **Único**: Puede saltar sobre otras piezas
 - **Captura**: En la casilla de destino
 
-#### 🔷 Alfil
+#### Alfil
 - **Movimiento**: Diagonal, cualquier distancia
 - **Limitación**: Solo casillas del mismo color
 - **Captura**: Igual que movimiento
 
-#### 👸 Reina
+#### Reina
 - **Movimiento**: Combinación de torre + alfil
 - **Más poderosa**: La pieza más versátil
 - **Captura**: Igual que movimiento
 
-#### 👑 Rey
+#### Rey
 - **Movimiento**: 1 casilla en cualquier dirección
 - **Especial**: Enroque (con condiciones)
 - **Importante**: No puede moverse a jaque
@@ -221,7 +221,7 @@ Tienes 3 opciones:
    - Caballo/Alfil = 3 puntos
    - Torre = 5 puntos
    - Reina = 9 puntos
-   - Rey = ¡invaluable!
+   - Rey = invaluable
 
 2. **Principios de apertura**:
    - Desarrolla piezas menores primero
@@ -239,13 +239,4 @@ Tienes 3 opciones:
 3. **Busca táctica**: Ataques dobles, clavadas, etc.
 4. **Final de juego**: Aprende mates básicos
 
-## ¡Diviértete!
-
-El ajedrez es un juego de por vida. No te preocupes por perder las primeras partidas - ¡hasta los grandes maestros pierden! Lo importante es:
-
-- **Aprender** de cada partida
-- **Practicar** regularmente  
-- **Estudiar** tácticas básicas
-- **Disfrutar** el proceso
-
-¡Que tengas excelentes partidas! 
+¡¡¡Que tengas excelentes partidas!!!
