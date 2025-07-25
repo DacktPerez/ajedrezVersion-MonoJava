@@ -32,11 +32,11 @@
 
 ## 🔧 Clases Principales
 
-### 1. PantallaPresentacion.java
+### 1. Main.java
 **Propósito**: Punto de entrada principal de la aplicación (main)
 
 ```java
-public class PantallaPresentacion extends JFrame {
+public class Main extends JFrame {
     // Métodos principales:
     - main()                  // Punto de entrada del programa
     - mostrarPresentacion()   // Pantalla de bienvenida
@@ -119,7 +119,6 @@ public class ValidadorMovimiento {
 - **Rey**: Una casilla en cualquier dirección + enroque especial
 
 ### 5. BotFacil.java
-**Propósito**: Inteligencia artificial para el oponente
 
 ```java
 public class BotFacil {
@@ -194,7 +193,7 @@ private boolean esJaqueMate(String color) {
 }
 ```
 
-## 🤖 Sistema de Bot Avanzado
+## 🤖 Sistema de Bot
 
 ### Arquitectura de Decisión
 
@@ -485,5 +484,3 @@ private tipo nombreMetodo(parametros) {
 ```
 
 ---
-
-Esta documentación debe ser actualizada cada vez que se añadan nuevas funcionalidades al juego.
