@@ -52,7 +52,7 @@ javac *.java
 
 3. **Ejecutar el juego**
 ```bash
-java MenuPrincipal
+java Main
 ```
 
 ## 🎮 Cómo Jugar
@@ -104,11 +104,11 @@ java MenuPrincipal
 ```
 AjedrezJava/
 ├── src/
-│   ├── MenuPrincipal.java          # Menú principal del juego
+│   ├── MenuJuego.java          # Menú del juego
 │   ├── TableroAjedrez.java         # Lógica principal del tablero
 │   ├── ValidadorMovimiento.java    # Validación de movimientos
 │   ├── BotFacil.java              # Inteligencia artificial
-│   └── PantallaPresentacion.java   # Pantalla de bienvenida
+│   └── Main.java   # Pantalla de bienvenida
 ├── resources/                      # Imágenes de las piezas
 │   ├── rey_blanco.png
 │   ├── rey_negro.png
