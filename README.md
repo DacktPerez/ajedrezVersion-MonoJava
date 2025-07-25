@@ -58,7 +58,7 @@ java MenuPrincipal
 ## 🎮 Cómo Jugar
 
 ### Inicio del Juego
-1. Ejecuta `MenuPrincipal.java`
+1. Ejecuta `Main.java`
 2. Selecciona el modo de juego:
    - **"Jugador vs Jugador"**: Para jugar con otra persona
    - **"Jugador vs Bot"**: Para jugar contra la computadora
@@ -144,11 +144,11 @@ AjedrezJava/
 
 ### Estructura de Clases
 
-- **`MenuPrincipal`**: Punto de entrada y selección de modo
+- **`Main`**: Punto de entrada y selección de modo
 - **`TableroAjedrez`**: Motor principal del juego
 - **`ValidadorMovimiento`**: Lógica de validación de movimientos
 - **`BotFacil`**: Inteligencia artificial del oponente
-- **`PantallaPresentacion`**: Interfaz de bienvenida
+- **`MenuJuego`**: Interfaz de bienvenida
 
 ### Tecnologías Utilizadas
 - Java SE 8+
@@ -170,25 +170,5 @@ AjedrezJava/
 3. **Error de compilación**
    - Verificar que Java esté instalado correctamente
    - Comprobar que todos los archivos .java estén en la misma carpeta
-
-## 📝 Licencia
-
-Este proyecto está desarrollado con fines educativos y de entretenimiento.
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Para contribuir:
-
-1. Fork el proyecto
-2. Crea una rama para tu función (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📞 Contacto
-
-Si tienes preguntas o sugerencias, no dudes en crear un issue en el repositorio.
-
----
 
 **¡Disfruta jugando ajedrez! ♟️👑**
