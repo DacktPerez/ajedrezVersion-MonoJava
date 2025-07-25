@@ -2,10 +2,6 @@
 
 Un juego de ajedrez completo desarrollado en Java con interfaz gráfica Swing que incluye todas las reglas oficiales del ajedrez y un bot inteligente para jugar en solitario.
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-![Swing](https://img.shields.io/badge/Swing-GUI-blue?style=for-the-badge)
-![Chess](https://img.shields.io/badge/Chess-Game-green?style=for-the-badge)
-
 ## 🎮 Características Principales
 
 ### ✅ Funcionalidades Implementadas
