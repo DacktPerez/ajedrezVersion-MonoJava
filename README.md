@@ -1,6 +1,6 @@
-# 🎮 Guía del Usuario - Ajedrez Java
+# Guía del Usuario - Ajedrez Java
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ### Primer Uso
 1. **Ejecutar el juego**: Haz doble clic en `Main.java` o ejecuta desde tu IDE
@@ -8,24 +8,24 @@
 3. **¡A jugar!**: El tablero se abrirá listo para comenzar
 
 ### Controles Básicos
-- **👆 Clic izquierdo**: Seleccionar pieza / Mover a casilla
-- **🔄 Clic en pieza seleccionada**: Cancelar selección
-- **✨ Borde azul**: Indica la pieza actualmente seleccionada
+- ** Clic izquierdo**: Seleccionar pieza / Mover a casilla
+- ** Clic en pieza seleccionada**: Cancelar selección
+- ** Borde azul**: Indica la pieza actualmente seleccionada
 
-## 🎯 Modos de Juego
+## Modos de Juego
 
-### 👥 Jugador vs Jugador (1v1)
+### Jugador vs Jugador (1v1)
 - **Turnos alternados**: Las blancas siempre comienzan
 - **Control total**: Ambos jugadores controlan sus piezas
 - **Ideal para**: Partidas locales entre amigos
 
-### 🤖 Jugador vs Bot (PvE)
+### Jugador vs Bot (PvE)
 - **Tú juegas**: Siempre con las piezas blancas
 - **Bot juega**: Automáticamente con las piezas negras
 - **Nivel**: Principiante (perfecto para aprender)
 - **Respuesta**: El bot piensa ~0.5 segundos antes de mover
 
-## ♟️ Cómo Mover las Piezas
+## Cómo Mover las Piezas
 
 ### Movimiento Básico
 1. **Haz clic** en la pieza que quieres mover
@@ -42,7 +42,7 @@
 - **Clic en la misma pieza**: Cancela la selección actual
 - **Clic en otra pieza tuya**: Cambia la selección
 
-## 🏰 Reglas Especiales
+## Reglas Especiales
 
 ### Enroque
 El enroque es un movimiento especial que involucra al rey y una torre.
@@ -53,12 +53,12 @@ El enroque es un movimiento especial que involucra al rey y una torre.
    - **Derecha**: Enroque corto (con torre del lado del rey)
    - **Izquierda**: Enroque largo (con torre del lado de la reina)
 
-#### Condiciones para el enroque:
-- ✅ El rey no se ha movido nunca
-- ✅ La torre no se ha movido nunca  
-- ✅ No hay piezas entre el rey y la torre
-- ✅ El rey no está en jaque
-- ✅ El rey no pasa por casillas atacadas
+#### Condiciones para el enroque ✅:
+- El rey no se ha movido nunca
+- La torre no se ha movido nunca  
+- No hay piezas entre el rey y la torre
+- El rey no está en jaque
+- El rey no pasa por casillas atacadas
 
 #### Ejemplo Visual:
 ```
@@ -69,7 +69,7 @@ Después del enroque corto:
 .....RK.  (Rey y torre intercambian posiciones)
 ```
 
-### 👑 Coronación de Peones
+### Coronación de Peones
 
 #### ¿Cuándo ocurre?
 - Cuando tu peón llega al final del tablero (fila 1 para blancas, fila 8 para negras)
@@ -77,10 +77,10 @@ Después del enroque corto:
 #### ¿Cómo elegir la pieza?
 1. **Mueve tu peón** a la última fila
 2. **Aparece un menú** con 4 opciones:
-   - 👸 **Reina** (recomendado - más poderosa)
-   - 🏰 **Torre** (movimiento horizontal/vertical)
-   - 🔷 **Alfil** (movimiento diagonal)  
-   - 🐎 **Caballo** (movimiento en L)
+   - **Reina** (recomendado - más poderosa)
+   - **Torre** (movimiento horizontal/vertical)
+   - **Alfil** (movimiento diagonal)  
+   - **Caballo** (movimiento en L)
 3. **Selecciona tu elección** y haz clic en "OK"
 4. **Tu peón se transforma** en la pieza elegida
 
@@ -89,7 +89,7 @@ Después del enroque corto:
 - **Caballo**: Útil para jaque mate específicos
 - **Torre/Alfil**: Ocasionalmente útiles en finales especiales
 
-## ⚡ Situaciones de Jaque
+## Situaciones de Jaque
 
 ### ¿Qué es jaque?
 - Tu rey está siendo atacado por una pieza enemiga
@@ -108,7 +108,7 @@ Tienes 3 opciones:
 - **Resultado**: ¡Has perdido la partida!
 - **El juego termina** automáticamente
 
-## 🤖 Jugando Contra el Bot
+## Jugando Contra el Bot
 
 ### Características del Bot
 - **Nivel**: Principiante amigable
@@ -117,16 +117,16 @@ Tienes 3 opciones:
 - **Estilo**: Movimientos variados y algo impredecibles
 
 ### ¿Qué hace bien el Bot?
-- ✅ Escapa cuando su rey está en jaque
-- ✅ Busca capturas obvias
-- ✅ Mueve peones hacia adelante
-- ✅ Desarrolla piezas gradualmente
+- Escapa cuando su rey está en jaque
+- Busca capturas obvias
+- Mueve peones hacia adelante
+- Desarrolla piezas gradualmente
 
 ### ¿Qué errores comete?
-- ❌ A veces ignora amenazas
-- ❌ No siempre hace los mejores movimientos
-- ❌ Puede ser "distraído" (20% del tiempo)
-- ❌ No planifica a largo plazo
+- A veces ignora amenazas
+- No siempre hace los mejores movimientos
+- Puede ser "distraído" (20% del tiempo)
+- No planifica a largo plazo
 
 ### Consejos para ganarle al Bot:
 1. **Desarrolla tus piezas** rápidamente
@@ -135,7 +135,7 @@ Tienes 3 opciones:
 4. **Controla el centro** del tablero
 5. **Ten paciencia** - el bot cometerá errores
 
-## 🎨 Interfaz Visual
+## Interfaz Visual
 
 ### Colores del Tablero
 - **Casillas claras**: Beige claro (#F0D9B5)
@@ -147,23 +147,23 @@ Tienes 3 opciones:
 - **Tamaño consistente**: 60x60 píxeles, perfectamente escaladas
 - **Fácil identificación**: Colores y formas tradicionales
 
-## 🔧 Solución de Problemas
+## Solución de Problemas
 
 ### "No puedo mover mi pieza"
 **Posibles causas:**
-- ❌ No es tu turno
-- ❌ Movimiento inválido para esa pieza
-- ❌ Tu rey quedaría en jaque
-- ❌ Hay una pieza bloqueando el camino
+- No es tu turno
+- Movimiento inválido para esa pieza
+- Tu rey quedaría en jaque
+- Hay una pieza bloqueando el camino
 
 **Solución:** Verifica las reglas de la pieza y asegúrate de que sea tu turno
 
 ### "El enroque no funciona"
 **Posibles causas:**
-- ❌ El rey o la torre ya se movieron
-- ❌ Hay piezas en el camino
-- ❌ El rey está en jaque
-- ❌ El rey pasaría por una casilla atacada
+- El rey o la torre ya se movieron
+- Hay piezas en el camino
+- El rey está en jaque
+- El rey pasaría por una casilla atacada
 
 **Solución:** Verifica todas las condiciones del enroque
 
@@ -175,7 +175,7 @@ Tienes 3 opciones:
 **Causa:** Error en el código
 **Solución:** Ejecuta desde un IDE para ver los mensajes de error
 
-## 📚 Reglas Básicas del Ajedrez
+## Reglas Básicas del Ajedrez
 
 ### Objetivo
 - **Ganar**: Dar jaque mate al rey enemigo
@@ -213,7 +213,7 @@ Tienes 3 opciones:
 - **Especial**: Enroque (con condiciones)
 - **Importante**: No puede moverse a jaque
 
-## 💡 Consejos y Estrategias
+## Consejos y Estrategias
 
 ### Para Principiantes
 1. **Aprende el valor** de cada pieza:
@@ -239,13 +239,13 @@ Tienes 3 opciones:
 3. **Busca táctica**: Ataques dobles, clavadas, etc.
 4. **Final de juego**: Aprende mates básicos
 
-## 🎉 ¡Diviértete!
+## ¡Diviértete!
 
 El ajedrez es un juego de por vida. No te preocupes por perder las primeras partidas - ¡hasta los grandes maestros pierden! Lo importante es:
 
-- 🧠 **Aprender** de cada partida
-- 🎯 **Practicar** regularmente  
-- 📚 **Estudiar** tácticas básicas
-- 😊 **Disfrutar** el proceso
+- **Aprender** de cada partida
+- **Practicar** regularmente  
+- **Estudiar** tácticas básicas
+- **Disfrutar** el proceso
 
-¡Que tengas excelentes partidas! ♟️👑
+¡Que tengas excelentes partidas! 
