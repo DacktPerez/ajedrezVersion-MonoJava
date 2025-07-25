@@ -16,7 +16,7 @@ Un juego de ajedrez completo desarrollado en Java con interfaz gráfica Swing qu
   - Jugador vs Bot (PvE)
 - **🏰 Enroque**: Tanto corto como largo, con validación completa
 - **👑 Coronación de Peones**: Interfaz interactiva para elegir la pieza
-- **🤖 Bot Inteligente**: IA con diferentes niveles de dificultad
+- **🤖 Bot**: Nivel principiante
 - **⚡ Detección de Jaque y Jaque Mate**: Sistema completo de verificación
 - **🎨 Interfaz Gráfica Intuitiva**: Tablero visual con arrastrar y soltar
 - **📋 Validación de Movimientos**: Sistema robusto de validación
@@ -41,7 +41,7 @@ Un juego de ajedrez completo desarrollado en Java con interfaz gráfica Swing qu
 1. **Clonar o descargar el proyecto**
 ```bash
 git clone [URL_DEL_REPOSITORIO]
-cd ajedrezVersion-MonoJava-1
+cd ajedrezVersion-MonoJava
 ```
 
 2. **Compilar el proyecto**
@@ -123,22 +123,6 @@ AjedrezJava/
 - **Patrón MVC**: Separación clara entre lógica y presentación
 - **Programación Orientada a Objetos**: Clases bien definidas y encapsuladas
 - **Swing GUI**: Interfaz gráfica responsiva y atractiva
-
-### Funcionalidades Avanzadas
-- **Copia Profunda**: Para simular movimientos sin afectar el tablero real
-- **Validación Robusta**: Sistema completo de validación de movimientos
-- **Estado del Juego**: Seguimiento de piezas movidas para enroque
-- **Detección de Patrones**: Reconocimiento automático de jaque mate
-
-## 🎯 Funcionalidades Futuras (Posibles Mejoras)
-
-- [ ] Captura al paso (en passant)
-- [ ] Reloj de ajedrez
-- [ ] Guardado y carga de partidas
-- [ ] Diferentes niveles de dificultad del bot
-- [ ] Historial de movimientos
-- [ ] Modo online multijugador
-- [ ] Análisis de partidas
 
 ## 👨‍💻 Desarrollo
 
