@@ -3,7 +3,7 @@
 ## 🚀 Inicio Rápido
 
 ### Primer Uso
-1. **Ejecutar el juego**: Haz doble clic en `MenuPrincipal.java` o ejecuta desde tu IDE
+1. **Ejecutar el juego**: Haz doble clic en `Main.java` o ejecuta desde tu IDE
 2. **Seleccionar modo**: Elige entre "Jugador vs Jugador" o "Jugador vs Bot"
 3. **¡A jugar!**: El tablero se abrirá listo para comenzar
 
