@@ -1,251 +1,470 @@
-# 🎮 Guía del Usuario - Ajedrez Java
+# 📖 Documentación Técnica - Ajedrez Java
 
-## 🚀 Inicio Rápido
+## 📋 Índice
+1. [Arquitectura del Sistema](#arquitectura-del-sistema)
+2. [Clases Principales](#clases-principales)
+3. [Funcionalidades Implementadas](#funcionalidades-implementadas)
+4. [Sistema de Bot](#sistema-de-bot)
+5. [Validación de Movimientos](#validación-de-movimientos)
+6. [Manejo de Estados](#manejo-de-estados)
+7. [Guía de Desarrollo](#guía-de-desarrollo)
 
-### Primer Uso
-1. **Ejecutar el juego**: Haz doble clic en `MenuPrincipal.java` o ejecuta desde tu IDE
-2. **Seleccionar modo**: Elige entre "Jugador vs Jugador" o "Jugador vs Bot"
-3. **¡A jugar!**: El tablero se abrirá listo para comenzar
+## 🏗️ Arquitectura del Sistema
 
-### Controles Básicos
-- **👆 Clic izquierdo**: Seleccionar pieza / Mover a casilla
-- **🔄 Clic en pieza seleccionada**: Cancelar selección
-- **✨ Borde azul**: Indica la pieza actualmente seleccionada
-
-## 🎯 Modos de Juego
-
-### 👥 Jugador vs Jugador (1v1)
-- **Turnos alternados**: Las blancas siempre comienzan
-- **Control total**: Ambos jugadores controlan sus piezas
-- **Ideal para**: Partidas locales entre amigos
-
-### 🤖 Jugador vs Bot (PvE)
-- **Tú juegas**: Siempre con las piezas blancas
-- **Bot juega**: Automáticamente con las piezas negras
-- **Nivel**: Principiante (perfecto para aprender)
-- **Respuesta**: El bot piensa ~0.5 segundos antes de mover
-
-## ♟️ Cómo Mover las Piezas
-
-### Movimiento Básico
-1. **Haz clic** en la pieza que quieres mover
-   - La pieza se resalta con un borde azul
-2. **Haz clic** en la casilla de destino
-   - Si el movimiento es válido, la pieza se mueve
-   - Si es inválido, aparece un mensaje de error
-
-### Capturas
-- **Automático**: Si hay una pieza enemiga en la casilla destino, se captura automáticamente
-- **Visual**: La pieza capturada desaparece del tablero
-
-### Cancelar Movimiento
-- **Clic en la misma pieza**: Cancela la selección actual
-- **Clic en otra pieza tuya**: Cambia la selección
-
-## 🏰 Reglas Especiales
-
-### Enroque
-El enroque es un movimiento especial que involucra al rey y una torre.
-
-#### ¿Cómo hacer enroque?
-1. **Selecciona tu rey** (debe estar en su posición inicial)
-2. **Mueve el rey 2 casillas** hacia la torre con la que quieres enrocar
-   - **Derecha**: Enroque corto (con torre del lado del rey)
-   - **Izquierda**: Enroque largo (con torre del lado de la reina)
-
-#### Condiciones para el enroque:
-- ✅ El rey no se ha movido nunca
-- ✅ La torre no se ha movido nunca  
-- ✅ No hay piezas entre el rey y la torre
-- ✅ El rey no está en jaque
-- ✅ El rey no pasa por casillas atacadas
-
-#### Ejemplo Visual:
+### Diagrama de Componentes
 ```
-Antes del enroque corto:
-...R...K  (R=Torre, K=Rey)
-
-Después del enroque corto:
-.....RK.  (Rey y torre intercambian posiciones)
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  MenuPrincipal  │────│ TableroAjedrez  │────│ValidadorMovimiento│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                               │
+                       ┌─────────────────┐
+                       │    BotFacil     │
+                       └─────────────────┘
 ```
 
-### 👑 Coronación de Peones
+### Patrón de Diseño
+- **MVC (Modelo-Vista-Controlador)**
+  - **Modelo**: `piezas[][]` - Estado del tablero
+  - **Vista**: Componentes Swing (JLabel, JPanel)
+  - **Controlador**: Métodos de manejo de eventos en `TableroAjedrez`
 
-#### ¿Cuándo ocurre?
-- Cuando tu peón llega al final del tablero (fila 1 para blancas, fila 8 para negras)
+## 🔧 Clases Principales
 
-#### ¿Cómo elegir la pieza?
-1. **Mueve tu peón** a la última fila
-2. **Aparece un menú** con 4 opciones:
-   - 👸 **Reina** (recomendado - más poderosa)
-   - 🏰 **Torre** (movimiento horizontal/vertical)
-   - 🔷 **Alfil** (movimiento diagonal)  
-   - 🐎 **Caballo** (movimiento en L)
-3. **Selecciona tu elección** y haz clic en "OK"
-4. **Tu peón se transforma** en la pieza elegida
+### 1. MenuPrincipal.java
+**Propósito**: Punto de entrada del juego y selección de modo
 
-#### Estrategia:
-- **Reina**: La mejor opción en el 95% de los casos
-- **Caballo**: Útil para jaque mate específicos
-- **Torre/Alfil**: Ocasionalmente útiles en finales especiales
+```java
+public class MenuPrincipal extends JFrame {
+    // Métodos principales:
+    - mostrarMenu()           // Interfaz principal
+    - iniciarJuegoVsJugador() // Modo 1v1
+    - iniciarJuegoVsBot()     // Modo PvE
+}
+```
 
-## ⚡ Situaciones de Jaque
+**Responsabilidades**:
+- Mostrar opciones de juego
+- Crear instancia de `TableroAjedrez` según el modo
+- Gestionar la navegación inicial
 
-### ¿Qué es jaque?
-- Tu rey está siendo atacado por una pieza enemiga
-- **Aparece un mensaje**: "¡Jaque al jugador [color]!"
-- **Debes salir del jaque** en tu próximo movimiento
+### 2. TableroAjedrez.java
+**Propósito**: Motor principal del juego
 
-### ¿Cómo salir del jaque?
-Tienes 3 opciones:
+```java
+public class TableroAjedrez extends JFrame {
+    // Atributos principales:
+    private JLabel[][] celdas           // GUI del tablero
+    private String[][] piezas           // Estado lógico
+    private String turnoActual          // Control de turnos
+    private boolean contraBot           // Modo de juego
+    
+    // Estados para enroque:
+    private boolean reyBlancoMovido
+    private boolean reyNegroMovido
+    private boolean torreBlancaIzquierdaMovida
+    private boolean torreBlancaDerechaMovida
+    private boolean torreNegraIzquierdaMovida
+    private boolean torreNegraDerechaMovida
+}
+```
 
-1. **Mover el rey** a una casilla segura
-2. **Bloquear** el ataque con otra pieza
-3. **Capturar** la pieza que está dando jaque
+**Métodos Clave**:
+- `manejarClick()`: Gestiona interacción del usuario
+- `realizarMovimientoBot()`: Ejecuta movimientos del bot
+- `puedeHacerEnroque()`: Valida condiciones de enroque
+- `realizarEnroque()`: Ejecuta el enroque
+- `coronarPeon()`: Maneja la promoción de peones
+- `estaEnJaque()`: Detecta situaciones de jaque
+- `esJaqueMate()`: Verifica jaque mate
 
-### Jaque Mate
-- **¿Qué es?**: No puedes salir del jaque de ninguna manera
-- **Resultado**: ¡Has perdido la partida!
-- **El juego termina** automáticamente
+### 3. ValidadorMovimiento.java
+**Propósito**: Validación de todos los movimientos de piezas
 
-## 🤖 Jugando Contra el Bot
+```java
+public class ValidadorMovimiento {
+    public static boolean esMovimientoValido(
+        String[][] piezas, 
+        String pieza, 
+        int filaOrigen, int colOrigen, 
+        int filaDestino, int colDestino
+    )
+}
+```
 
-### Características del Bot
-- **Nivel**: Principiante amigable
-- **Comportamiento**: Comete errores realistas
-- **Velocidad**: Responde en ~0.5 segundos
-- **Estilo**: Movimientos variados y algo impredecibles
+**Validaciones por Pieza**:
+- **Peón**: Avance, captura diagonal, movimiento doble inicial
+- **Torre**: Líneas horizontales y verticales
+- **Alfil**: Líneas diagonales
+- **Caballo**: Movimiento en "L"
+- **Reina**: Combinación torre + alfil
+- **Rey**: Una casilla en cualquier dirección + enroque especial
 
-### ¿Qué hace bien el Bot?
-- ✅ Escapa cuando su rey está en jaque
-- ✅ Busca capturas obvias
-- ✅ Mueve peones hacia adelante
-- ✅ Desarrolla piezas gradualmente
+### 4. BotFacil.java
+**Propósito**: Inteligencia artificial para el oponente
 
-### ¿Qué errores comete?
-- ❌ A veces ignora amenazas
-- ❌ No siempre hace los mejores movimientos
-- ❌ Puede ser "distraído" (20% del tiempo)
-- ❌ No planifica a largo plazo
+```java
+public class BotFacil {
+    public static int[] obtenerMovimiento(String[][] piezas)
+}
+```
 
-### Consejos para ganarle al Bot:
-1. **Desarrolla tus piezas** rápidamente
-2. **Protege tu rey** con enroque temprano
-3. **Busca capturas** que el bot pueda pasar por alto
-4. **Controla el centro** del tablero
-5. **Ten paciencia** - el bot cometerá errores
+**Estrategia del Bot**:
+1. **Escape de Jaque** (Prioridad Máxima)
+2. **Distracción Aleatoria** (20% probabilidad)
+3. **Capturas Aleatorias**
+4. **Movimientos de Peones Aleatorios**
+5. **Movimientos Generales Aleatorios**
+6. **Fallback**: Primer movimiento válido
 
-## 🎨 Interfaz Visual
+## 🎮 Funcionalidades Implementadas
 
-### Colores del Tablero
-- **Casillas claras**: Beige claro (#F0D9B5)
-- **Casillas oscuras**: Marrón (#B58863)
-- **Pieza seleccionada**: Borde azul grueso
+### 1. 🏰 Sistema de Enroque
 
-### Piezas
-- **Gráficos claros**: Cada pieza tiene su imagen distintiva
-- **Tamaño consistente**: 60x60 píxeles, perfectamente escaladas
-- **Fácil identificación**: Colores y formas tradicionales
+#### Validaciones Implementadas:
+- ✅ Rey y torre no se han movido
+- ✅ No hay piezas entre rey y torre
+- ✅ Rey no está en jaque
+- ✅ Rey no pasa por casillas atacadas
+- ✅ Posiciones iniciales correctas
 
-## 🔧 Solución de Problemas
+#### Código Clave:
+```java
+private boolean puedeHacerEnroque(String color, boolean esEnroqueCorto) {
+    // 1. Verificar estados de movimiento
+    // 2. Verificar posiciones iniciales
+    // 3. Verificar camino libre
+    // 4. Verificar que rey no esté en jaque
+    // 5. Simular movimiento para verificar casillas atacadas
+}
+```
 
-### "No puedo mover mi pieza"
-**Posibles causas:**
-- ❌ No es tu turno
-- ❌ Movimiento inválido para esa pieza
-- ❌ Tu rey quedaría en jaque
-- ❌ Hay una pieza bloqueando el camino
+### 2. 👑 Sistema de Coronación
 
-**Solución:** Verifica las reglas de la pieza y asegúrate de que sea tu turno
+#### Características:
+- **Jugador Humano**: Interfaz de selección interactiva
+- **Bot**: Promoción automática a reina
+- **Opciones**: Reina, Torre, Alfil, Caballo
 
-### "El enroque no funciona"
-**Posibles causas:**
-- ❌ El rey o la torre ya se movieron
-- ❌ Hay piezas en el camino
-- ❌ El rey está en jaque
-- ❌ El rey pasaría por una casilla atacada
+#### Código Clave:
+```java
+private void coronarPeon(int fila, int columna, String color) {
+    String[] opciones = {"Reina", "Torre", "Alfil", "Caballo"};
+    int seleccion = JOptionPane.showOptionDialog(/* ... */);
+    // Crear nueva pieza según selección
+}
+```
 
-**Solución:** Verifica todas las condiciones del enroque
+### 3. ⚡ Sistema de Jaque y Jaque Mate
 
-### "Las imágenes no aparecen"
-**Causa:** Carpeta de recursos mal ubicada
-**Solución:** Asegúrate de que la carpeta `resources/` esté en la ubicación correcta
+#### Detección de Jaque:
+```java
+private boolean estaEnJaque(String[][] tablero, String colorDelRey) {
+    // 1. Encontrar posición del rey
+    // 2. Verificar si alguna pieza enemiga puede atacarlo
+    // 3. Usar ValidadorMovimiento para verificar ataques
+}
+```
 
-### "El juego se cierra inesperadamente"
-**Causa:** Error en el código
-**Solución:** Ejecuta desde un IDE para ver los mensajes de error
+#### Detección de Jaque Mate:
+```java
+private boolean esJaqueMate(String color) {
+    // 1. Verificar que esté en jaque
+    // 2. Probar todos los movimientos posibles
+    // 3. Simular cada movimiento
+    // 4. Verificar si alguno escapa del jaque
+}
+```
 
-## 📚 Reglas Básicas del Ajedrez
+## 🤖 Sistema de Bot Avanzado
 
-### Objetivo
-- **Ganar**: Dar jaque mate al rey enemigo
-- **Empate**: Situaciones de tablas (no implementado aún)
+### Arquitectura de Decisión
 
-### Movimiento de Piezas
+```
+┌─────────────────┐
+│ ¿Rey en Jaque?  │ ──Yes──→ buscarEscapeDeJaque()
+└─────────────────┘
+         │ No
+         ▼
+┌─────────────────┐
+│ ¿Distracción?   │ ──20%──→ buscarMovimientoAleatorio()
+│    (20% prob)   │
+└─────────────────┘
+         │ 80%
+         ▼
+┌─────────────────┐
+│ Buscar Capturas │ ──→ buscarCapturaAleatoria()
+└─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Mover Peones    │ ──→ moverPeonAleatorio()
+└─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Movimiento      │ ──→ buscarMovimientoAleatorio()
+│ General         │
+└─────────────────┘
+```
 
-#### ♟️ Peón
-- **Adelante**: 1 casilla (2 en primer movimiento)
-- **Captura**: 1 casilla en diagonal
-- **Especial**: Coronación al llegar al final
+### Algoritmos de Movimiento
 
-#### 🏰 Torre
-- **Movimiento**: Horizontal y vertical, cualquier distancia
-- **Captura**: Igual que movimiento
-- **Especial**: Participa en el enroque
+#### 1. Escape de Jaque
+```java
+private static int[] buscarEscapeDeJaque(String[][] piezas) {
+    // 1. Intentar mover el rey a casilla segura
+    // 2. Si no es posible, intentar bloquear/capturar atacante
+    // 3. Simular cada movimiento para verificar efectividad
+}
+```
 
-#### 🐎 Caballo
-- **Movimiento**: En "L" (2+1 o 1+2 casillas)
-- **Único**: Puede saltar sobre otras piezas
-- **Captura**: En la casilla de destino
+#### 2. Capturas Aleatorias
+```java
+private static int[] buscarCapturaAleatoria(String[][] piezas) {
+    // 1. Recopilar todas las capturas posibles
+    // 2. Almacenar en ArrayList
+    // 3. Seleccionar aleatoriamente con Math.random()
+}
+```
 
-#### 🔷 Alfil
-- **Movimiento**: Diagonal, cualquier distancia
-- **Limitación**: Solo casillas del mismo color
-- **Captura**: Igual que movimiento
+#### 3. Movimiento de Peones Inteligente
+```java
+private static int[] moverPeonAleatorio(String[][] piezas) {
+    // 1. Buscar peones en TODO el tablero (no solo iniciales)
+    // 2. Incluir movimientos de avance Y capturas diagonales
+    // 3. Considerar movimiento doble desde posición inicial
+    // 4. Selección aleatoria entre opciones válidas
+}
+```
 
-#### 👸 Reina
-- **Movimiento**: Combinación de torre + alfil
-- **Más poderosa**: La pieza más versátil
-- **Captura**: Igual que movimiento
+## 🔍 Sistema de Validación
 
-#### 👑 Rey
-- **Movimiento**: 1 casilla en cualquier dirección
-- **Especial**: Enroque (con condiciones)
-- **Importante**: No puede moverse a jaque
+### Jerarquía de Validación
 
-## 💡 Consejos y Estrategias
+```
+esMovimientoValido()
+├── Validaciones Generales
+│   ├── Límites del tablero
+│   ├── Pieza origen válida
+│   └── No capturar pieza propia
+├── Validaciones por Tipo
+│   ├── validarMovimientoPeon()
+│   ├── validarMovimientoTorre()
+│   ├── validarMovimientoAlfil()
+│   ├── validarMovimientoCaballo()
+│   ├── validarMovimientoReina()
+│   └── validarMovimientoRey()
+└── Validaciones de Camino
+    └── esCaminoLibre()
+```
 
-### Para Principiantes
-1. **Aprende el valor** de cada pieza:
-   - Peón = 1 punto
-   - Caballo/Alfil = 3 puntos
-   - Torre = 5 puntos
-   - Reina = 9 puntos
-   - Rey = ¡invaluable!
+### Ejemplo: Validación de Peón
+```java
+private static boolean validarMovimientoPeon(String[][] piezas, String pieza, 
+                                           int fo, int co, int fd, int cd) {
+    boolean esBlanco = pieza.contains("blanco");
+    int direccion = esBlanco ? -1 : 1;
+    int df = fd - fo;
+    int dc = cd - co;
+    
+    // Movimiento hacia adelante
+    if (dc == 0) {
+        if (df == direccion && piezas[fd][cd] == null) return true;
+        if (df == 2 * direccion && /* posición inicial */ && 
+            piezas[fd][cd] == null && piezas[fo + direccion][co] == null) {
+            return true;
+        }
+    }
+    
+    // Captura diagonal
+    if (Math.abs(dc) == 1 && df == direccion) {
+        String piezaDestino = piezas[fd][cd];
+        return piezaDestino != null && !mismoBando(pieza, piezaDestino);
+    }
+    
+    return false;
+}
+```
 
-2. **Principios de apertura**:
-   - Desarrolla piezas menores primero
-   - Controla el centro
-   - Enroca temprano para proteger al rey
+## 📊 Manejo de Estados
 
-3. **Táctica básica**:
-   - Busca capturas "gratis"
-   - Protege tus piezas
-   - Ataca piezas no defendidas
+### Estados del Juego
+```java
+// Estados de piezas (para enroque)
+private boolean reyBlancoMovido = false;
+private boolean reyNegroMovido = false;
+private boolean torreBlancaIzquierdaMovida = false;
+// ... otras torres
 
-### Contra el Bot
-1. **Sé paciente**: El bot cometerá errores
-2. **Desarrolla rápido**: Saca tus piezas del fondo
-3. **Busca táctica**: Ataques dobles, clavadas, etc.
-4. **Final de juego**: Aprende mates básicos
+// Estado del turno
+private String turnoActual = "blanco";
 
-## 🎉 ¡Diviértete!
+// Configuración del juego
+private boolean contraBot = false;
 
-El ajedrez es un juego de por vida. No te preocupes por perder las primeras partidas - ¡hasta los grandes maestros pierden! Lo importante es:
+// Selección del usuario
+private int filaOrigen = -1;
+private int colOrigen = -1;
+private JLabel celdaSeleccionada = null;
+```
 
-- 🧠 **Aprender** de cada partida
-- 🎯 **Practicar** regularmente  
-- 📚 **Estudiar** tácticas básicas
-- 😊 **Disfrutar** el proceso
+### Actualización de Estados
+```java
+private void actualizarEstadoPiezasMovidas(int fila, int columna, String pieza) {
+    if (pieza.contains("rey")) {
+        if (pieza.contains("blanco")) reyBlancoMovido = true;
+        else reyNegroMovido = true;
+    } else if (pieza.contains("torre")) {
+        // Identificar qué torre específica se movió
+        if (pieza.contains("blanco") && fila == 7) {
+            if (columna == 0) torreBlancaIzquierdaMovida = true;
+            else if (columna == 7) torreBlancaDerechaMovida = true;
+        }
+        // Similar para torres negras...
+    }
+}
+```
 
-¡Que tengas excelentes partidas! ♟️👑
+## 🛠️ Guía de Desarrollo
+
+### Añadir Nueva Funcionalidad
+
+#### 1. Nueva Pieza
+```java
+// En ValidadorMovimiento.java
+private static boolean validarMovimientoNuevaPieza(/*parámetros*/) {
+    // Lógica de movimiento
+    return true;
+}
+
+// En esMovimientoValido()
+if (tiposPieza.contains("nuevapieza")) {
+    return validarMovimientoNuevaPieza(/*parámetros*/);
+}
+```
+
+#### 2. Nueva Regla
+```java
+// En TableroAjedrez.java
+private boolean puedeAplicarNuevaRegla(/*parámetros*/) {
+    // Validaciones específicas
+    return true;
+}
+
+// En manejarClick()
+if (esMovimientoNuevaRegla(/*parámetros*/)) {
+    if (puedeAplicarNuevaRegla(/*parámetros*/)) {
+        realizarNuevaRegla(/*parámetros*/);
+        return;
+    }
+}
+```
+
+### Mejoras del Bot
+
+#### Añadir Nuevo Comportamiento
+```java
+// En BotFacil.java
+private static int[] nuevaEstrategia(String[][] piezas) {
+    java.util.List<int[]> movimientos = new java.util.ArrayList<>();
+    
+    // Lógica de la estrategia
+    for (int fila = 0; fila < 8; fila++) {
+        for (int col = 0; col < 8; col++) {
+            // Evaluar movimientos
+            if (/* condición */) {
+                movimientos.add(new int[]{fila, col, nuevaFila, nuevaCol});
+            }
+        }
+    }
+    
+    // Selección aleatoria
+    if (!movimientos.isEmpty()) {
+        int indice = (int)(Math.random() * movimientos.size());
+        return movimientos.get(indice);
+    }
+    
+    return null;
+}
+
+// En obtenerMovimiento()
+int[] nuevoMov = nuevaEstrategia(piezas);
+if (nuevoMov != null) return nuevoMov;
+```
+
+### Debugging y Testing
+
+#### Activar Mensajes de Debug
+```java
+// Añadir en métodos clave:
+System.out.println("DEBUG: " + mensaje);
+
+// Ejemplo en enroque:
+if (reyBlancoMovido) {
+    System.out.println("DEBUG: Rey blanco ya se movió");
+    return false;
+}
+```
+
+#### Simular Estados
+```java
+// Para testing:
+private String[][] crearTableroTest() {
+    String[][] tablero = new String[8][8];
+    // Configurar posiciones específicas para test
+    return tablero;
+}
+```
+
+### Optimizaciones
+
+#### Performance
+- Usar `StringBuilder` para concatenación de strings
+- Cache de movimientos válidos
+- Lazy loading de validaciones costosas
+
+#### Memoria
+- Reutilizar objetos `ArrayList`
+- Implementar pooling de arrays temporales
+
+## 📝 Convenciones de Código
+
+### Nomenclatura
+- **Clases**: PascalCase (`TableroAjedrez`)
+- **Métodos**: camelCase (`obtenerMovimiento`)
+- **Variables**: camelCase (`filaOrigen`)
+- **Constantes**: UPPER_SNAKE_CASE (`MAX_FILAS`)
+
+### Estructura de Métodos
+```java
+private tipo nombreMetodo(parametros) {
+    // 1. Validaciones de entrada
+    if (condicionInvalida) return valorDefault;
+    
+    // 2. Lógica principal
+    tipo resultado = calcularResultado();
+    
+    // 3. Post-procesamiento
+    procesarResultado(resultado);
+    
+    return resultado;
+}
+```
+
+### Comentarios
+```java
+// Comentario de línea para explicaciones breves
+
+/**
+ * Comentario de bloque para métodos públicos
+ * @param parametro Descripción del parámetro
+ * @return Descripción del valor de retorno
+ */
+
+/* Comentario multilínea para 
+   explicaciones más largas */
+```
+
+---
+
+Esta documentación debe ser actualizada cada vez que se añadan nuevas funcionalidades al juego.
