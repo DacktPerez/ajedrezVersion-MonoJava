@@ -15,7 +15,7 @@ public class TableroAjedrez extends JFrame {
 
     private String turnoActual = "blanco";
     private boolean contraBot = false;
-    
+
     // Variables para controlar el enroque
     private boolean reyBlancoMovido = false;
     private boolean reyNegroMovido = false;
@@ -24,7 +24,7 @@ public class TableroAjedrez extends JFrame {
     private boolean torreNegraIzquierdaMovida = false;
     private boolean torreNegraDerechaMovida = false;
 
-    // ✅ Constructor con opción de juego contra bot o 1 vs 1
+
     public TableroAjedrez(boolean contraBot) {
         this.contraBot = contraBot;
 
@@ -32,6 +32,29 @@ public class TableroAjedrez extends JFrame {
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+        setSize(600, 650);
+        JPanel controlPanel = new JPanel();
+        JButton btnTablas = new JButton("Rendirse");
+        JButton btnMenu   = new JButton("Volver al Menú");
+
+        btnTablas.addActionListener(e -> {
+            int resp = JOptionPane.showConfirmDialog(this, "¿Te quieres rendir?", "Rendirse", JOptionPane.YES_NO_OPTION);
+            if (resp == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(this, "¡Te rendiste!");
+                System.exit(0);
+            }
+        });
+
+        btnMenu.addActionListener(e -> {
+            dispose();
+            new MenuJuego().setVisible(true);
+        });
+
+        controlPanel.add(btnTablas);
+        controlPanel.add(btnMenu);
+
+        add(controlPanel, BorderLayout.NORTH);
 
         JPanel panelTablero = new JPanel(new GridLayout(8, 8));
 
@@ -60,11 +83,9 @@ public class TableroAjedrez extends JFrame {
                 panelTablero.add(celda);
             }
         }
-
-        add(panelTablero);
+        add(panelTablero, BorderLayout.CENTER);
         inicializarPiezas();
-    }
-
+}
     private void inicializarPiezas() {
         for (int col = 0; col < 8; col++) {
             colocar("resources/peon_blanco.png", 6, col);
@@ -153,34 +174,34 @@ public class TableroAjedrez extends JFrame {
             }
 
             String piezaSeleccionada = piezas[filaOrigen][colOrigen];
-            
+
             // Verificar si es un movimiento de enroque
             if (esMovimientoEnroque(filaOrigen, colOrigen, fila, columna)) {
                 boolean esEnroqueCorto = (columna == 6); // columna 6 es enroque corto, columna 2 es enroque largo
-                
+
                 if (puedeHacerEnroque(turnoActual, esEnroqueCorto)) {
                     realizarEnroque(turnoActual, esEnroqueCorto);
-                    
+
                     if (celdaSeleccionada != null) {
                         celdaSeleccionada.setBorder(null);
                         celdaSeleccionada = null;
                     }
                     filaOrigen = -1;
                     colOrigen = -1;
-                    
+
                     turnoActual = turnoActual.equals("blanco") ? "negro" : "blanco";
-                    
+
                     // Verificar jaque después del enroque
                     if (estaEnJaque(piezas, turnoActual)) {
                         if (esJaqueMate(turnoActual)) {
-                            JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el jugador " + (turnoActual.equals("blanco") ? "negro" : "blanco") + " 🎉");
+                            JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el jugador " + (turnoActual.equals("blanco") ? "negro" : "blanco"));
                             System.exit(0);
                         } else {
                             JOptionPane.showMessageDialog(this, "¡Jaque al jugador " + turnoActual + "!");
                         }
                     }
-                    
-                    // ✅ Lógica del bot sencillo
+
+                    // Lógica del bot sencillo
                     if (contraBot && turnoActual.equals("negro")) {
                         realizarMovimientoBot();
                     }
@@ -190,7 +211,7 @@ public class TableroAjedrez extends JFrame {
                     return;
                 }
             }
-            
+
             if (ValidadorMovimiento.esMovimientoValido(piezas, piezaSeleccionada, filaOrigen, colOrigen, fila, columna)) {
                 String[][] copia = copiarMatriz(piezas);
                 copia[fila][columna] = piezaSeleccionada;
@@ -224,14 +245,14 @@ public class TableroAjedrez extends JFrame {
 
                 if (estaEnJaque(piezas, turnoActual)) {
                     if (esJaqueMate(turnoActual)) {
-                        JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el jugador " + (turnoActual.equals("blanco") ? "negro" : "blanco") + " 🎉");
+                        JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el jugador " + (turnoActual.equals("blanco") ? "negro" : "blanco"));
                         System.exit(0);
                     } else {
                         JOptionPane.showMessageDialog(this, "¡Jaque al jugador " + turnoActual + "!");
                     }
                 }
 
-                // ✅ Lógica del bot sencillo
+                // Lógica del bot sencillo
                 if (contraBot && turnoActual.equals("negro")) {
                     realizarMovimientoBot();
                 }
@@ -242,50 +263,44 @@ public class TableroAjedrez extends JFrame {
     }
 
     private void realizarMovimientoBot() {
-        try {
-            Thread.sleep(500); // 🧠 pausa para efecto visual
+        int[] mov = BotFacil.obtenerMovimiento(piezas);
+        if (mov != null) {
+            String pieza = piezas[mov[0]][mov[1]];
 
-            int[] mov = BotFacil.obtenerMovimiento(piezas);
-            if (mov != null) {
-                String pieza = piezas[mov[0]][mov[1]];
-                
-                // Verificar si el bot quiere hacer enroque
-                if (esMovimientoEnroque(mov[0], mov[1], mov[2], mov[3])) {
-                    boolean esEnroqueCorto = (mov[3] == 6);
-                    if (puedeHacerEnroque("negro", esEnroqueCorto)) {
-                        realizarEnroque("negro", esEnroqueCorto);
-                    } else {
-                        // Si no puede hacer enroque, hacer movimiento normal
-                        actualizarEstadoPiezasMovidas(mov[0], mov[1], pieza);
-                        colocar(pieza, mov[2], mov[3]);
-                        limpiar(mov[0], mov[1]);
-                    }
+            // Verificar si el bot quiere hacer enroque
+            if (esMovimientoEnroque(mov[0], mov[1], mov[2], mov[3])) {
+                boolean esEnroqueCorto = (mov[3] == 6);
+                if (puedeHacerEnroque("negro", esEnroqueCorto)) {
+                    realizarEnroque("negro", esEnroqueCorto);
                 } else {
-                    // Movimiento normal del bot
+                    // Si no puede hacer enroque, hacer movimiento normal
                     actualizarEstadoPiezasMovidas(mov[0], mov[1], pieza);
                     colocar(pieza, mov[2], mov[3]);
                     limpiar(mov[0], mov[1]);
-                    
-                    // Verificar si el peón del bot debe ser coronado
-                    if (debeCoronarPeon(pieza, mov[2])) {
-                        String colorPieza = obtenerColor(pieza);
-                        coronarPeonBot(mov[2], mov[3], colorPieza);
-                    }
                 }
-                
-                turnoActual = "blanco";
+            } else {
+                // Movimiento normal del bot
+                actualizarEstadoPiezasMovidas(mov[0], mov[1], pieza);
+                colocar(pieza, mov[2], mov[3]);
+                limpiar(mov[0], mov[1]);
 
-                if (estaEnJaque(piezas, turnoActual)) {
-                    if (esJaqueMate(turnoActual)) {
-                        JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el bot.");
-                        System.exit(0);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "¡Jaque al jugador blanco!");
-                    }
+                // Verificar si el peón del bot debe ser coronado
+                if (debeCoronarPeon(pieza, mov[2])) {
+                    String colorPieza = obtenerColor(pieza);
+                    coronarPeonBot(mov[2], mov[3], colorPieza);
                 }
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+            turnoActual = "blanco";
+
+            if (estaEnJaque(piezas, turnoActual)) {
+                if (esJaqueMate(turnoActual)) {
+                    JOptionPane.showMessageDialog(this, "¡Jaque mate! Ganó el bot.");
+                    System.exit(0);
+                } else {
+                    JOptionPane.showMessageDialog(this, "¡Jaque al jugador blanco!");
+                }
+            }
         }
     }
 
@@ -361,7 +376,7 @@ public class TableroAjedrez extends JFrame {
         int fila = color.equals("blanco") ? 7 : 0;
         int colRey = 4;
         int colTorre = esEnroqueCorto ? 7 : 0;
-        
+
         // Verificar que el rey y la torre no se hayan movido
         if (color.equals("blanco")) {
             if (reyBlancoMovido) return false;
@@ -372,47 +387,47 @@ public class TableroAjedrez extends JFrame {
             if (esEnroqueCorto && torreNegraDerechaMovida) return false;
             if (!esEnroqueCorto && torreNegraIzquierdaMovida) return false;
         }
-        
+
         // Verificar que las piezas estén en sus posiciones iniciales
         String rey = piezas[fila][colRey];
         String torre = piezas[fila][colTorre];
-        
+
         if (rey == null || !rey.contains("rey") || !rey.contains(color)) return false;
         if (torre == null || !torre.contains("torre") || !torre.contains(color)) return false;
-        
+
         // Verificar que no haya piezas entre el rey y la torre
         int inicio = Math.min(colRey, colTorre) + 1;
         int fin = Math.max(colRey, colTorre);
-        
+
         for (int col = inicio; col < fin; col++) {
             if (piezas[fila][col] != null) {
                 return false;
             }
         }
-        
+
         // Verificar que el rey no esté en jaque
         if (estaEnJaque(piezas, color)) {
             return false;
         }
-        
+
         // Verificar que el rey no pase por casillas atacadas
         int direccion = esEnroqueCorto ? 1 : -1;
         for (int i = 1; i <= 2; i++) {
             int colIntermedia = colRey + (i * direccion);
-            
+
             // Crear tablero temporal para simular el movimiento
             String[][] tableroTemporal = copiarMatriz(piezas);
             tableroTemporal[fila][colIntermedia] = rey;
             tableroTemporal[fila][colRey] = null;
-            
+
             if (estaEnJaque(tableroTemporal, color)) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     // Función para realizar el enroque
     private void realizarEnroque(String color, boolean esEnroqueCorto) {
         int fila = color.equals("blanco") ? 7 : 0;
@@ -420,18 +435,18 @@ public class TableroAjedrez extends JFrame {
         int colTorre = esEnroqueCorto ? 7 : 0;
         int nuevaColRey = esEnroqueCorto ? 6 : 2;
         int nuevaColTorre = esEnroqueCorto ? 5 : 3;
-        
+
         String rey = piezas[fila][colRey];
         String torre = piezas[fila][colTorre];
-        
+
         // Mover el rey
         colocar(rey, fila, nuevaColRey);
         limpiar(fila, colRey);
-        
+
         // Mover la torre
         colocar(torre, fila, nuevaColTorre);
         limpiar(fila, colTorre);
-        
+
         // Marcar que las piezas se movieron
         if (color.equals("blanco")) {
             reyBlancoMovido = true;
@@ -449,7 +464,7 @@ public class TableroAjedrez extends JFrame {
             }
         }
     }
-    
+
     // Función para detectar si un movimiento es un enroque
     private boolean esMovimientoEnroque(int filaOrigen, int colOrigen, int filaDestino, int colDestino) {
         // Solo el rey puede iniciar un enroque
@@ -457,25 +472,25 @@ public class TableroAjedrez extends JFrame {
         if (pieza == null || !pieza.contains("rey")) {
             return false;
         }
-        
+
         // El enroque solo se puede hacer en la misma fila
         if (filaOrigen != filaDestino) {
             return false;
         }
-        
+
         // Verificar si es enroque corto (rey se mueve 2 casillas a la derecha)
         if (colOrigen == 4 && colDestino == 6) {
             return true; // Enroque corto
         }
-        
+
         // Verificar si es enroque largo (rey se mueve 2 casillas a la izquierda)
         if (colOrigen == 4 && colDestino == 2) {
             return true; // Enroque largo
         }
-        
+
         return false;
     }
-    
+
     // Función para actualizar el estado de las piezas movidas
     private void actualizarEstadoPiezasMovidas(int fila, int columna, String pieza) {
         if (pieza.contains("rey")) {
@@ -500,53 +515,53 @@ public class TableroAjedrez extends JFrame {
             }
         }
     }
-    
+
     // Función para verificar si un peón debe ser coronado
     private boolean debeCoronarPeon(String pieza, int filaDestino) {
         if (pieza == null || !pieza.contains("peon")) {
             return false;
         }
-        
+
         // Peón blanco llega a la fila 0 (primera fila)
         if (pieza.contains("blanco") && filaDestino == 0) {
             return true;
         }
-        
+
         // Peón negro llega a la fila 7 (última fila)
         if (pieza.contains("negro") && filaDestino == 7) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     // Función para coronar un peón (jugador humano)
     private void coronarPeon(int fila, int columna, String color) {
         // Opciones de coronación
         String[] opciones = {"Reina", "Torre", "Alfil", "Caballo"};
-        
+
         // Crear panel personalizado para mostrar las opciones
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(new JLabel("¡Coronación de peón! Elige la nueva pieza:"));
         panel.add(Box.createVerticalStrut(10));
-        
+
         int seleccion = JOptionPane.showOptionDialog(
-            this,
-            panel,
-            "Coronación de Peón",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            opciones,
-            opciones[0] // Por defecto, reina
+                this,
+                panel,
+                "Coronación de Peón",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0] // Por defecto, reina
         );
-        
+
         // Si el usuario cierra el diálogo sin seleccionar, coronar como reina por defecto
         if (seleccion == -1) {
             seleccion = 0;
         }
-        
+
         // Determinar la nueva pieza basada en la selección
         String nuevaPieza;
         switch (seleccion) {
@@ -566,35 +581,33 @@ public class TableroAjedrez extends JFrame {
                 nuevaPieza = color.equals("blanco") ? "resources/reina_blanco.png" : "resources/reina_negro.png";
                 break;
         }
-        
+
         // Colocar la nueva pieza
         colocar(nuevaPieza, fila, columna);
-        
+
         // Mostrar mensaje de confirmación
         String nombrePieza = opciones[seleccion].toLowerCase();
-        JOptionPane.showMessageDialog(this, 
-            "¡Peón coronado como " + nombrePieza + "!", 
-            "Coronación exitosa", 
-            JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+                "¡Peón coronado como " + nombrePieza + "!",
+                "Coronación exitosa",
+                JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     // Función para coronar un peón automáticamente (para el bot)
     private void coronarPeonBot(int fila, int columna, String color) {
         // El bot siempre elige reina (la pieza más poderosa)
         String nuevaPieza = color.equals("blanco") ? "resources/reina_blanco.png" : "resources/reina_negro.png";
         colocar(nuevaPieza, fila, columna);
-        
+
         // Mostrar mensaje informativo
-        JOptionPane.showMessageDialog(this, 
-            "El bot ha coronado su peón como reina.", 
-            "Coronación del bot", 
-            JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this,
+                "El bot ha coronado su peón como reina.",
+                "Coronación del bot",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
         // Prueba modo 1 vs 1
         SwingUtilities.invokeLater(() -> new TableroAjedrez(false).setVisible(true));
-        // Prueba vs bot (descomenta para test)
-        // SwingUtilities.invokeLater(() -> new TableroAjedrez(true).setVisible(true));
     }
 }
